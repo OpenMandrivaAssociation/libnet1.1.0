@@ -4,13 +4,13 @@
 Summary:	A C library for portable packet creation
 Name:		libnet%{major}
 Version:	1.1.0
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	BSD
 Group:		System/Libraries
 URL:		http://www.packetfactory.net/libnet
 Source0:	http://www.packetfactory.net/libnet/dist/libnet-%{version}.tar.bz2
 Patch0:		libnet-1.1.0-shared.diff
-BuildPreReq:	libpcap-devel
+BuildRequires:	libpcap-devel
 BuildRequires:	autoconf2.5
 BuildRequires:	automake1.7
 BuildRequires:	libtool
