@@ -14,6 +14,7 @@ BuildRequires:	libpcap-devel
 BuildRequires:	autoconf2.5
 BuildRequires:	automake1.7
 BuildRequires:	libtool
+BuildRoot:	%{_tmppath}/%{name}-buildroot
 
 %description
 Libnet is an API to help with the construction and handling of network
