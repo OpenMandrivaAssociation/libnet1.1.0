@@ -4,7 +4,7 @@
 Summary:	A C library for portable packet creation
 Name:		libnet%{major}
 Version:	1.1.0
-Release:	%mkrel 6
+Release:	%mkrel 7
 License:	BSD
 Group:		System/Libraries
 URL:		http://www.packetfactory.net/libnet
@@ -14,7 +14,7 @@ BuildRequires:	libpcap-devel
 BuildRequires:	autoconf2.5
 BuildRequires:	automake1.7
 BuildRequires:	libtool
-BuildRoot:	%{_tmppath}/%{name}-buildroot
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Libnet is an API to help with the construction and handling of network
@@ -164,5 +164,3 @@ rm -f %{buildroot}%{_libdir}/lib*.la
 %files -n %{libname}-static-devel
 %defattr(-,root,root)
 %attr(0644,root,root) %{_libdir}/lib*.a
-
-
