@@ -4,7 +4,7 @@
 Summary:	A C library for portable packet creation
 Name:		libnet%{major}
 Version:	1.1.0
-Release:	%mkrel 12
+Release:	%mkrel 13
 License:	BSD
 Group:		System/Libraries
 URL:		http://www.packetfactory.net/libnet
@@ -13,7 +13,7 @@ Patch0:		libnet-1.1.0-shared.diff
 Patch1:		libnet-1.1.0-format_not_a_string_literal_and_no_format_arguments.diff
 BuildRequires:	libpcap-devel
 BuildRequires:	autoconf2.5
-BuildRequires:	automake1.7
+BuildRequires:	automake
 BuildRequires:	libtool
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -107,7 +107,7 @@ chmod 644 README doc/CHANGELOG*
 rm -rf autom4te.cache
 export WANT_AUTOCONF_2_5=1
 rm -f configure
-libtoolize --copy --force; aclocal-1.7; autoconf; automake-1.7 --add-missing
+libtoolize --copy --force; aclocal; autoconf; automake --add-missing
 
 export LIBNET_CONFIG_CFLAGS="-I%{_includedir}/libnet"
 export CFLAGS="%{optflags} -fPIC -Wall"
