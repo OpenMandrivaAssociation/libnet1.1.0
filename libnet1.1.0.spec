@@ -4,7 +4,7 @@
 Summary:	A C library for portable packet creation
 Name:		libnet%{major}
 Version:	1.1.0
-Release:	%mkrel 14
+Release:	15
 License:	BSD
 Group:		System/Libraries
 URL:		http://www.packetfactory.net/libnet
@@ -12,10 +12,7 @@ Source0:	http://www.packetfactory.net/libnet/dist/libnet-%{version}.tar.bz2
 Patch0:		libnet-1.1.0-shared.diff
 Patch1:		libnet-1.1.0-format_not_a_string_literal_and_no_format_arguments.diff
 BuildRequires:	libpcap-devel
-BuildRequires:	autoconf2.5
-BuildRequires:	automake
-BuildRequires:	libtool
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildRequires:	autoconf automake libtool
 
 %description
 Libnet is an API to help with the construction and handling of network
@@ -46,7 +43,7 @@ test code for more detailed information
 %package -n	%{libname}-devel
 Summary:	Development library and header files for the libnet library
 Group:		Development/C
-Requires:	%{libname} = %{version}-%{release}
+Requires:	%{libname} >= %{version}-%{release}
 Provides:	libnet%{major}-devel = %{version}-%{release}
 Provides:	net-devel = %{version}-%{release}
 Provides:	%{mklibname net 1.1}-devel = %{version}-%{release}
@@ -66,28 +63,6 @@ test code for more detailed information
 
 This package contains the static libnet library and its header
 files.
-
-%package -n	%{libname}-static-devel
-Summary:	Static development library for the libnet library
-Group:		Development/C
-Requires:	%{libname}-devel = %{version}-%{release}
-Provides:	libnet%{major}-static-devel = %{version}-%{release}
-Provides:	%{mklibname net 1.1}-devel = %{version}-%{release}
-Obsoletes:	%{mklibname net 1.1}-devel
-Conflicts:	%{mklibname net 1.0.2}-static-devel
-Conflicts:	%{mklibname net 1.1.2}-static-devel
-
-%description	-n %{libname}-static-devel
-Libnet is an API to help with the construction and handling of network
-packets. It provides a portable framework for low-level network
-packet writing and handling (use libnet in conjunction with libpcap and
-you can write some really cool stuff).  Libnet includes packet creation
-at the IP layer and at the link layer as well as a host of supplementary
-and complementary functionalty. Libnet is avery handy with which to
-write network tools and network test code.  See the manpage and sample
-test code for more detailed information
-
-This package contains the static libnet library.
 
 %prep
 
@@ -121,7 +96,7 @@ export CFLAGS="%{optflags} -fPIC -Wall"
 gcc -Wl,-soname,libnet.so.%{major} -shared %{optflags} -fPIC -o libnet.so.%{major} src/*.o
 
 %install
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
+rm -rf %{buildroot}
 
 install -d %{buildroot}%{_bindir}
 install -d %{buildroot}%{_mandir}/man3
@@ -139,34 +114,16 @@ install -m0755 libnet.so.%{major} %{buildroot}%{_libdir}/
 ln -snf libnet.so.%{major} %{buildroot}%{_libdir}/libnet.so
 
 # cleanup
-rm -f %{buildroot}%{_libdir}/lib*.la
-
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
-%clean
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
+rm -f %{buildroot}%{_libdir}/*.*a
 
 %files -n %{libname}
-%defattr(-,root,root)
 %doc README doc/CHANGELOG* doc/COPYING
 %attr(0755,root,root) %{_libdir}/lib*.so.*
 
 %files -n %{libname}-devel
-%defattr(-,root,root)
 %attr(0755,root,root) %{_bindir}/*
 %attr(0755,root,root) %{_libdir}/lib*.so
-#%attr(0644,root,root) %{_libdir}/lib*.la
 %attr(0644,root,root) %{_includedir}/*.h
 %dir %{_includedir}/libnet
 %attr(0644,root,root) %{_includedir}/libnet/*.h
 %attr(0644,root,root) %{_mandir}/man*/*
-
-%files -n %{libname}-static-devel
-%defattr(-,root,root)
-%attr(0644,root,root) %{_libdir}/lib*.a
