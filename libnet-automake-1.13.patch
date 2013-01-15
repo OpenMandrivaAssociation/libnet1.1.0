@@ -1,0 +1,19 @@
+--- Libnet-latest/configure.in.am113~	2013-01-16 00:30:34.903653614 +0100
++++ Libnet-latest/configure.in	2013-01-16 00:31:40.048875891 +0100
+@@ -7,13 +7,13 @@ dnl
+ dnl Process this file with autoconf to produce a configure script.
+ 
+ 
+-AC_INIT(src/libnet_build_ip.c)
++AC_INIT(libnet, $LIBNET_VERSION)
+ LIBNET_VERSION=`cat VERSION`
+ AC_MSG_RESULT(beginning autoconfiguration process for libnet-$LIBNET_VERSION...)
+ AC_CANONICAL_SYSTEM
+ 
+-AM_INIT_AUTOMAKE(libnet, $LIBNET_VERSION)
+-AM_CONFIG_HEADER(include/config.h)
++AM_INIT_AUTOMAKE
++AC_CONFIG_HEADERS([include/config.h])
+ AM_MAINTAINER_MODE
+ 
+ dnl

@@ -4,18 +4,18 @@
 Summary:	A C library for portable packet creation
 Name:		libnet%{major}
 Version:	1.1.0
-Release:	%mkrel 16
+Release:	17
 License:	BSD
 Group:		System/Libraries
 URL:		http://www.packetfactory.net/libnet
 Source0:	http://www.packetfactory.net/libnet/dist/libnet-%{version}.tar.bz2
 Patch0:		libnet-1.1.0-shared.diff
 Patch1:		libnet-1.1.0-format_not_a_string_literal_and_no_format_arguments.diff
+Patch2:		libnet-automake-1.13.patch
 BuildRequires:	libpcap-devel
 BuildRequires:	autoconf2.5
 BuildRequires:	automake
 BuildRequires:	libtool
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Libnet is an API to help with the construction and handling of network
@@ -94,6 +94,7 @@ This package contains the static libnet library.
 %setup -n Libnet-latest -q
 %patch0 -p1
 %patch1 -p0
+%patch2 -p1 -b .am113~
 
 # cvs cleanup
 for i in `find . -type d -name CVS` `find . -type f -name .cvs\*` `find . -type f -name .#\*`; do
