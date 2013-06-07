@@ -1,4 +1,4 @@
-%define	major 1.1.0
+%define	major	1.1.0
 %define	libname %mklibname net %{major}
 
 Summary:	A C library for portable packet creation
@@ -7,15 +7,13 @@ Version:	1.1.0
 Release:	17
 License:	BSD
 Group:		System/Libraries
-URL:		http://www.packetfactory.net/libnet
+Url:		http://www.packetfactory.net/libnet
 Source0:	http://www.packetfactory.net/libnet/dist/libnet-%{version}.tar.bz2
 Patch0:		libnet-1.1.0-shared.diff
 Patch1:		libnet-1.1.0-format_not_a_string_literal_and_no_format_arguments.diff
 Patch2:		libnet-automake-1.13.patch
-BuildRequires:	libpcap-devel
-BuildRequires:	autoconf2.5
-BuildRequires:	automake
 BuildRequires:	libtool
+BuildRequires:	libpcap-devel
 
 %description
 Libnet is an API to help with the construction and handling of network
@@ -48,63 +46,22 @@ Summary:	Development library and header files for the libnet library
 Group:		Development/C
 Requires:	%{libname} = %{version}-%{release}
 Provides:	libnet%{major}-devel = %{version}-%{release}
-Provides:	net-devel = %{version}-%{release}
-Provides:	%{mklibname net 1.1}-devel = %{version}-%{release}
-Obsoletes:	%{mklibname net 1.1}-devel
-Conflicts:	%{mklibname net 1.0.2}-devel
-Conflicts:	%{mklibname net 1.1.2}-devel
 
 %description	-n %{libname}-devel
-Libnet is an API to help with the construction and handling of network
-packets. It provides a portable framework for low-level network
-packet writing and handling (use libnet in conjunction with libpcap and
-you can write some really cool stuff).  Libnet includes packet creation
-at the IP layer and at the link layer as well as a host of supplementary
-and complementary functionalty. Libnet is avery handy with which to
-write network tools and network test code.  See the manpage and sample
-test code for more detailed information
-
-This package contains the static libnet library and its header
+This package contains the development libnet library and its header
 files.
 
-%package -n	%{libname}-static-devel
-Summary:	Static development library for the libnet library
-Group:		Development/C
-Requires:	%{libname}-devel = %{version}-%{release}
-Provides:	libnet%{major}-static-devel = %{version}-%{release}
-Provides:	%{mklibname net 1.1}-devel = %{version}-%{release}
-Obsoletes:	%{mklibname net 1.1}-devel
-Conflicts:	%{mklibname net 1.0.2}-static-devel
-Conflicts:	%{mklibname net 1.1.2}-static-devel
-
-%description	-n %{libname}-static-devel
-Libnet is an API to help with the construction and handling of network
-packets. It provides a portable framework for low-level network
-packet writing and handling (use libnet in conjunction with libpcap and
-you can write some really cool stuff).  Libnet includes packet creation
-at the IP layer and at the link layer as well as a host of supplementary
-and complementary functionalty. Libnet is avery handy with which to
-write network tools and network test code.  See the manpage and sample
-test code for more detailed information
-
-This package contains the static libnet library.
-
 %prep
-
-%setup -n Libnet-latest -q
-%patch0 -p1
-%patch1 -p0
-%patch2 -p1 -b .am113~
+%setup -qn Libnet-latest
+%apply_patches
 
 # cvs cleanup
 for i in `find . -type d -name CVS` `find . -type f -name .cvs\*` `find . -type f -name .#\*`; do
-    if [ -e "$i" ]; then rm -rf $i; fi >&/dev/null
+	if [ -e "$i" ]; then rm -rf $i; fi >&/dev/null
 done
 
 # fix file permissions
 chmod 644 README doc/CHANGELOG*
-
-%build
 rm -rf autom4te.cache
 export WANT_AUTOCONF_2_5=1
 rm -f configure
@@ -113,8 +70,9 @@ libtoolize --copy --force; aclocal; autoconf; automake --add-missing
 export LIBNET_CONFIG_CFLAGS="-I%{_includedir}/libnet"
 export CFLAGS="%{optflags} -fPIC -Wall"
 
+%build
 %configure2_5x \
-    --with-pf_packet=yes 
+	--disable-static
 
 %make CFLAGS="%{optflags} -fPIC -Wall"
 
@@ -122,11 +80,8 @@ export CFLAGS="%{optflags} -fPIC -Wall"
 gcc -Wl,-soname,libnet.so.%{major} -shared %{optflags} -fPIC -o libnet.so.%{major} src/*.o
 
 %install
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
-
 install -d %{buildroot}%{_bindir}
 install -d %{buildroot}%{_mandir}/man3
-
 %makeinstall_std
 
 install -m755 libnet-config %{buildroot}%{_bindir}/
@@ -139,102 +94,15 @@ rm -f %{buildroot}%{_libdir}/lib*.so*
 install -m0755 libnet.so.%{major} %{buildroot}%{_libdir}/
 ln -snf libnet.so.%{major} %{buildroot}%{_libdir}/libnet.so
 
-# cleanup
-rm -f %{buildroot}%{_libdir}/lib*.la
-
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
-%clean
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
-
 %files -n %{libname}
-%defattr(-,root,root)
-%doc README doc/CHANGELOG* doc/COPYING
-%attr(0755,root,root) %{_libdir}/lib*.so.*
+%{_libdir}/libnet.so.%{major}
 
 %files -n %{libname}-devel
-%defattr(-,root,root)
-%attr(0755,root,root) %{_bindir}/*
-%attr(0755,root,root) %{_libdir}/lib*.so
-#%attr(0644,root,root) %{_libdir}/lib*.la
-%attr(0644,root,root) %{_includedir}/*.h
+%doc README doc/CHANGELOG* doc/COPYING
+%{_bindir}/*
+%{_libdir}/lib*.so
+%{_includedir}/*.h
 %dir %{_includedir}/libnet
-%attr(0644,root,root) %{_includedir}/libnet/*.h
-%attr(0644,root,root) %{_mandir}/man*/*
-
-%files -n %{libname}-static-devel
-%defattr(-,root,root)
-%attr(0644,root,root) %{_libdir}/lib*.a
-
-
-%changelog
-* Mon May 02 2011 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-14mdv2011.0
-+ Revision: 661501
-- mass rebuild
-
-* Sun Jan 02 2011 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-13mdv2011.0
-+ Revision: 627634
-- don't force the usage of automake1.7
-
-* Thu Nov 25 2010 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-12mdv2011.0
-+ Revision: 601056
-- rebuild
-
-* Sun Mar 14 2010 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-11mdv2010.1
-+ Revision: 519026
-- rebuild
-
-* Wed Sep 02 2009 Christophe Fergeau <cfergeau@mandriva.com> 1.1.0-10mdv2010.0
-+ Revision: 425629
-- rebuild
-
-* Tue Dec 16 2008 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-9mdv2009.1
-+ Revision: 314862
-- added P1 to fix build (thanks pixel)
-
-* Wed Aug 06 2008 Thierry Vignaud <tv@mandriva.org> 1.1.0-8mdv2009.0
-+ Revision: 264845
-- rebuild early 2009.0 package (before pixel changes)
-
-  + Pixel <pixel@mandriva.com>
-    - do not call ldconfig in %%post/%%postun, it is now handled by filetriggers
-
-* Thu May 29 2008 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-7mdv2009.0
-+ Revision: 213000
-- rebuild
-
-* Tue Mar 04 2008 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-6mdv2008.1
-+ Revision: 178764
-- rebuild
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - rebuild
-    - kill re-definition of %%buildroot on Pixel's request
-
-  + Olivier Blin <oblin@mandriva.com>
-    - restore BuildRoot
-
-* Sun Aug 19 2007 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-4mdv2008.0
-+ Revision: 66939
-- fix buildprereq rpmlint upload blocker
-
-
-* Wed Nov 01 2006 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-3mdv2007.0
-+ Revision: 74835
-- Import libnet1.1.0
-
-* Wed Jul 26 2006 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-3mdk
-- rebuild
-
-* Fri Mar 17 2006 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-2mdk
-- fix deps
-
-* Fri Mar 17 2006 Oden Eriksson <oeriksson@mandriva.com> 1.1.0-1mdk
-- the libnet cleanup campaign
+%{_includedir}/libnet/*.h
+%{_mandir}/man*/*
 

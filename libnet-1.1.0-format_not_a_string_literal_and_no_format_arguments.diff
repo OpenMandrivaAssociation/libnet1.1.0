@@ -1,5 +1,5 @@
---- src/libnet_init.c	2002-08-06 00:26:03.000000000 +0200
-+++ src/libnet_init.c.oden	2008-12-16 16:52:44.000000000 +0100
+--- ./src/libnet_init.c	2002-08-06 00:26:03.000000000 +0200
++++ ./src/libnet_init.c.oden	2008-12-16 16:52:44.000000000 +0100
 @@ -84,7 +84,7 @@ libnet_init(int injection_type, char *de
              }
              if (libnet_open_link(l) == -1)
