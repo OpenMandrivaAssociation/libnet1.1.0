@@ -53,7 +53,7 @@ files.
 
 %prep
 %setup -qn Libnet-latest
-%apply_patches
+%autopatch -p1
 
 # cvs cleanup
 for i in `find . -type d -name CVS` `find . -type f -name .cvs\*` `find . -type f -name .#\*`; do
