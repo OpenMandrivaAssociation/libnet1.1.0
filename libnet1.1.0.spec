@@ -7,7 +7,7 @@ Version:	1.1.0
 Release:	17
 License:	BSD
 Group:		System/Libraries
-Url:		http://www.packetfactory.net/libnet
+Url:		https://www.packetfactory.net/libnet
 Source0:	http://www.packetfactory.net/libnet/dist/libnet-%{version}.tar.bz2
 Patch0:		libnet-1.1.0-shared.diff
 Patch1:		libnet-1.1.0-format_not_a_string_literal_and_no_format_arguments.diff
